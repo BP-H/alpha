@@ -5,6 +5,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Html, ContactShadows, OrbitControls } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import styles from './portalHero.module.css';
 
 type ShapeProps = {
   paused?: boolean;
@@ -174,59 +175,30 @@ export default function PortalHero({ logoSrc = '/icon.png' }: { logoSrc?: string
 
   // styles
   const portalStyle: React.CSSProperties = {
-    position: 'sticky',
     top: `calc(${headerH}px + env(safe-area-inset-top, 0px))`,
-    zIndex: 100,
-    isolation: 'isolate',
-    background: 'var(--panel, #0b0c11)',
-    borderBottom: '1px solid var(--stroke, #1f2230)',
   };
   const shellStyle: React.CSSProperties = {
     height: dynamicH,
-    transition: 'height 120ms ease',
-    pointerEvents: 'auto',
   };
   const cardStyle: React.CSSProperties = {
-    position: 'relative',
-    height: '100%',
-    borderRadius: 12,
-    overflow: 'hidden',
-    border: '1px solid var(--stroke, #262a3c)',
-    background: '#0f0f12',
-    boxShadow: `0 0 20px rgba(155,140,255,0.15)`,
-    touchAction: 'manipulation',
     transform: `scale(${scale})`,
-    transformOrigin: 'top center',
-    transition: 'transform 120ms ease',
-    willChange: 'transform',
   };
-  const glowPink: React.CSSProperties = {
-    position: 'absolute', inset: -20, pointerEvents: 'none',
-    background: 'radial-gradient(60% 50% at 50% 35%, rgba(255,45,184,0.25) 0%, transparent 70%)',
+  const glowPinkStyle: React.CSSProperties = {
     opacity: 0.5 + kick * 0.4,
     filter: `blur(${6 + 12 * kick}px)`,
-    mixBlendMode: 'screen',
   };
-  const glowPurple: React.CSSProperties = {
-    position: 'absolute', inset: -20, pointerEvents: 'none',
-    background: 'radial-gradient(55% 45% at 50% 30%, rgba(155,140,255,0.20) 0%, transparent 70%)',
+  const glowPurpleStyle: React.CSSProperties = {
     opacity: 0.4 + kick * 0.3,
     filter: `blur(${8 + 10 * kick}px)`,
-    mixBlendMode: 'screen',
-  };
-  const glossAngle: React.CSSProperties = {
-    position: 'absolute', inset: 0, pointerEvents: 'none',
-    background: 'linear-gradient(130deg, rgba(155,140,255,0.12) 10%, rgba(255,255,255,0) 40%, rgba(255,45,184,0.15) 90%)',
-    mixBlendMode: 'screen',
   };
 
   return (
-    <div style={portalStyle}>
-      <div style={shellStyle}>
-        <div style={cardStyle}>
-          <div aria-hidden style={glowPink} />
-          <div aria-hidden style={glowPurple} />
-          <div aria-hidden style={glossAngle} />
+    <div className={styles.portal} style={portalStyle}>
+      <div className={styles.shell} style={shellStyle}>
+        <div className={styles.card} style={cardStyle}>
+          <div aria-hidden className={styles.glowPink} style={glowPinkStyle} />
+          <div aria-hidden className={styles.glowPurple} style={glowPurpleStyle} />
+          <div aria-hidden className={styles.glossAngle} />
           <Canvas
             camera={{ position: [0, 0, 3.2], fov: 50 }}
             dpr={[1, 1.5]}
