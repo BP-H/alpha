@@ -206,7 +206,7 @@ function PostFX({ reduced }: { reduced: boolean }) {
   const noiseOpacity = reduced ? 0.015 : 0.03;
 
   return (
-    <EffectComposer disableNormalPass>
+    <EffectComposer enableNormalPass={false}>
       <Bloom
         intensity={bloomIntensity}
         luminanceThreshold={0.8}
