@@ -1,0 +1,26 @@
+.rxn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  margin-right: 8px;
+  border-radius: 999px;
+  border: 1px solid var(--sn-stroke, #223);
+  background: #0f1626;
+  color: var(--sn-muted, #9aa6c1);
+  font-size: 13px;
+  line-height: 1;
+  transition: box-shadow .18s ease, border-color .18s ease, color .18s;
+}
+.rxn:hover {
+  border-color: #2a3754;
+  box-shadow: 0 0 0 2px var(--sn-ring, rgba(255,45,184,.35)) inset;
+}
+.rxn.active {
+  color: #fff;
+  border-color: #323f5e;
+  box-shadow: 0 0 0 2px var(--sn-ring, rgba(255,45,184,.35)) inset;
+}
+.emoji { font-size: 16px; }
+.count { opacity: .9; }

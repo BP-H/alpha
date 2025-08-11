@@ -1,0 +1,15 @@
+.card{
+  border:1px solid rgba(0,0,0,.08);
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.75));
+  border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;
+}
+.header{ display:flex; align-items:center; gap:10px; }
+.avatar{ width:40px; height:40px; border-radius:10px; background:#fff; border:1px solid rgba(0,0,0,.18); }
+.name{ font-weight:900; }
+.meta{ font-size:.86rem; opacity:.7 }
+
+.body{ display:flex; flex-direction:column; gap:10px; }
+.text{ margin:.25rem 0 0 0; font-weight:600; }
+.media{ width:100%; height:auto; border-radius:8px; border:1px solid rgba(0,0,0,.08); }
+
+.footer{ display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }

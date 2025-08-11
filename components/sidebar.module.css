@@ -1,0 +1,154 @@
+/* Drawer-style sidebar, matches Sidebar.tsx classes exactly. */
+/* Mobile-first; pinned open on large screens. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 48;
+}
+
+.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The sliding panel (Sidebar.tsx uses styles.side + styles.open) */
+.side {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 272px;
+  max-width: 88vw;
+  transform: translateX(-104%);
+  transition: transform .25s ease, box-shadow .25s ease;
+  z-index: 49;
+
+  /* aespa/whiplash vibe: dark base + pink/blue feathered glows */
+  background:
+    radial-gradient(140% 80% at -10% -10%, rgba(255,47,146,.22), transparent 60%),
+    radial-gradient(140% 80% at 120% -10%, rgba(14,165,255,.20), transparent 60%),
+    linear-gradient(180deg, #0c0f16, #0a0d14);
+  border-right: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 10px 14px 10px;
+}
+
+.open {
+  transform: translateX(0);
+}
+
+/* Header logo */
+.logo {
+  height: 40px;
+  width: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  letter-spacing: .3px;
+  color: #111320;
+  margin: 6px 6px 10px 6px;
+
+  background:
+    linear-gradient(90deg, #ffffff, #f4f6fb);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.10) inset,
+    0 10px 30px rgba(255, 47, 146, .25);
+}
+
+/* Nav */
+.nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 0 4px 8px 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: #e9eef5;
+  text-decoration: none;
+
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(16,18,27,.75);
+  backdrop-filter: blur(6px);
+  transition: background .15s ease, transform .08s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.item:hover {
+  background: rgba(23,26,37,.88);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 0 0 2px rgba(14,165,255,.18) inset;
+}
+
+.item:active {
+  transform: translateY(1px);
+}
+
+/* Active page */
+.active {
+  border-color: rgba(255,255,255,.26);
+  background:
+    linear-gradient(90deg, rgba(255,47,146,.12), rgba(14,165,255,.12)),
+    rgba(23,26,37,.92);
+  box-shadow:
+    0 0 0 2px rgba(255,47,146,.18) inset,
+    0 0 0 1px rgba(255,255,255,.10) inset;
+}
+
+/* Grid of external integrations */
+.connectGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  padding: 0 4px 12px 4px;
+}
+
+.connector {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 12px;
+  color: #e9eef5;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(16,18,27,.75);
+  backdrop-filter: blur(6px);
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.connector:hover {
+  background: rgba(23,26,37,.88);
+  border-color: rgba(255,255,255,.18);
+}
+
+/* Optional small “pill” footer area */
+.footer {
+  margin-top: auto;
+  padding: 12px;
+  font-size: 12px;
+  color: rgba(233,238,245,.75);
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* Keep it open on desktop like LinkedIn */
+@media (min-width: 980px) {
+  .backdrop { display: none; }
+  .side {
+    transform: translateX(0);
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+}

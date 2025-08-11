@@ -1,0 +1,14 @@
+.rail{ display:flex; gap:10px; overflow:auto; padding:10px 2px 2px 2px; margin-bottom: 12px; }
+.card{
+  min-width:200px; padding:12px; border:1px solid rgba(0,0,0,.12);
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.6));
+  border-radius:12px; display:flex; flex-direction:column; gap:8px;
+}
+.head{ display:flex; align-items:center; gap:10px; }
+.avatar{
+  width:38px; height:38px; background:#fff; border:1px solid rgba(0,0,0,.18);
+  display:grid; place-items:center; font-weight:900; border-radius:10px;
+}
+.name{ font-weight:900; }
+.meta{ font-size:.86rem; opacity:.7 }
+.stat{ font-weight:800; font-size:.9rem; }
