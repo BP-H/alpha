@@ -5,11 +5,11 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
-import PostComposer from '@/components/PostComposer';
 import styles from './page.module.css';
 
 // 3D hero (no SSR)
 const PortalHero = dynamic(() => import('@/components/PortalHero'), { ssr: false });
+import PostComposer from '@/components/PostComposer';
 
 type Post = {
   id: string;
@@ -77,7 +77,7 @@ export default function Page() {
   // measure header height → CSS var so sticky math is exact
   useEffect(() => {
     if (typeof ResizeObserver === 'undefined') return;
-    const header = document.querySelector<HTMLElement>('header[role="banner"]');
+    const header = document.querySelector<HTMLElement>('[data-topbar]');
     if (!header) return;
     const set = () =>
       document.documentElement.style.setProperty('--topbar-h', `${header.offsetHeight}px`);
@@ -108,7 +108,7 @@ export default function Page() {
   return (
     <main className={styles.root}>
       {/* FIXED header (mobile-safe) */}
-      <header className={styles.topbar} role="banner">
+      <header data-topbar className={styles.topbar} role="banner">
         <div className={styles.leftCluster}>
           <button
             className={`${styles.iconBtn} ${styles.showMobile}`}
@@ -171,15 +171,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-        {[
-          'Feed',
-          'Messages',
-          'Proposals',
-          'Decisions',
-          'Execution',
-          'Companies',
-          'Settings',
-        ].map((l) => (
+        {['Feed', 'Messages', 'Proposals', 'Decisions', 'Execution', 'Companies', 'Settings'].map((l) => (
           <button key={l} className={`${styles.btn} ${styles.ghost} ${styles.leftnav}`} style={{ width: '100%' }}>
             {l}
           </button>
@@ -206,15 +198,7 @@ export default function Page() {
           </div>
 
           <nav className={`${styles.card} ${styles.navStack}`}>
-            {[
-              'Feed',
-              'Messages',
-              'Proposals',
-              'Decisions',
-              'Execution',
-              'Companies',
-              'Settings',
-            ].map((l) => (
+            {['Feed', 'Messages', 'Proposals', 'Decisions', 'Execution', 'Companies', 'Settings'].map((l) => (
               <button key={l} className={`${styles.btn} ${styles.ghost} ${styles.leftnav}`}>
                 {l}
               </button>
@@ -335,4 +319,13 @@ export default function Page() {
         }
         html,
         body {
-          background: linear-gradient(180deg, var(--bg0) 0%,
+          background: linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 100%);
+          color: var(--ink);
+        }
+        * {
+          box-sizing: border-box;
+        }
+      `}</style>
+    </main>
+  );
+}
