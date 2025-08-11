@@ -40,8 +40,9 @@ export default function PostComposer() {
 
   return (
     <div className="card composer">
+      <label htmlFor="postText">Share something...</label>
       <textarea
-        placeholder="Share something..."
+        id="postText"
         value={text}
         onChange={(e) => {
           setText(e.target.value);
@@ -62,6 +63,9 @@ export default function PostComposer() {
       </div>
       <style jsx>{`
         .composer { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+        label {
+          color:var(--ink);
+        }
         textarea {
           width:100%;
           min-height:60px;
