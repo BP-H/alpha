@@ -109,6 +109,21 @@ export async function exchangeInstagramCode(params: {
   return json.access_token as string;
 }
 
+export async function publishInstagramMedia(
+  containerId: string,
+  accessToken: string
+): Promise<unknown> {
+  const res = await fetch(
+    `https://graph.facebook.com/v18.0/${encodeURIComponent(
+      containerId
+    )}/publish?access_token=${encodeURIComponent(accessToken)}`,
+    { method: 'POST' }
+  );
+  if (!res.ok)
+    throw new Error(`Instagram publish failed: ${res.status}`);
+  return res.json();
+}
+
 export async function postToInstagram(
   payload: CrossPostPayload
 ): Promise<unknown> {
@@ -123,5 +138,6 @@ export async function postToInstagram(
     }
   );
   if (!res.ok) throw new Error(`Instagram post failed: ${res.status}`);
-  return res.json();
+  const container = await res.json();
+  return publishInstagramMedia(container.id as string, payload.accessToken);
 }
