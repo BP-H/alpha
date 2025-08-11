@@ -46,7 +46,8 @@ export async function exchangeLinkedInCode(params: {
 }
 
 export async function postToLinkedIn(
-  payload: CrossPostPayload
+  payload: CrossPostPayload,
+  authorUrn: string
 ): Promise<unknown> {
   const res = await fetch('https://api.linkedin.com/v2/ugcPosts', {
     method: 'POST',
@@ -56,7 +57,7 @@ export async function postToLinkedIn(
       'X-Restli-Protocol-Version': '2.0.0',
     },
     body: JSON.stringify({
-      author: 'urn:li:person:me',
+      author: authorUrn,
       lifecycleState: 'PUBLISHED',
       specificContent: {
         'com.linkedin.ugc.ShareContent': {

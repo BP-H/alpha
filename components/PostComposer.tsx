@@ -22,7 +22,10 @@ export default function PostComposer() {
     const dummyToken = '';
     try {
       if (dest.linkedin)
-        await postToLinkedIn({ accessToken: dummyToken, content: text });
+        await postToLinkedIn(
+          { accessToken: dummyToken, content: text },
+          'urn:li:person:me'
+        );
       if (dest.instagram)
         await postToInstagram({ accessToken: dummyToken, content: text });
       setText('');
