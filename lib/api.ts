@@ -26,7 +26,7 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T = any>(path: string, init: RequestInit = {}): Promise<T | string> {
+async function requestJson<T>(path: string, init: RequestInit = {}): Promise<T> {
   const url = `${BASE}${path.startsWith('/') ? '' : '/'}${path}`;
   let res: Response;
 
@@ -50,7 +50,34 @@ async function request<T = any>(path: string, init: RequestInit = {}): Promise<T
     throw new ApiError(url, res.status, res.statusText, body);
   }
 
-  return isJson ? (res.json() as Promise<T>) : res.text();
+  return res.json() as Promise<T>;
+}
+
+async function requestText(path: string, init: RequestInit = {}): Promise<string> {
+  const url = `${BASE}${path.startsWith('/') ? '' : '/'}${path}`;
+  let res: Response;
+
+  try {
+    res = await fetch(url, { cache: 'no-store', ...init });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new Error(`${url} request failed: ${msg}`);
+  }
+
+  const contentType = res.headers.get('Content-Type') || '';
+  const isJson = contentType.includes('application/json');
+
+  if (!res.ok) {
+    let body: unknown;
+    try {
+      body = isJson ? await res.json() : await res.text();
+    } catch {
+      // ignore body read errors
+    }
+    throw new ApiError(url, res.status, res.statusText, body);
+  }
+
+  return res.text();
 }
 
 const AGENTS_BASE = process.env.NEXT_PUBLIC_API_BASE || '';
@@ -67,17 +94,17 @@ async function json<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
 
 /** GET /status */
 export function getStatus(signal?: AbortSignal) {
-  return request('/status', { signal });
+  return requestText('/status', { signal });
 }
 
 /** GET /system/collective-entropy */
 export function getEntropy(signal?: AbortSignal) {
-  return request('/system/collective-entropy', { signal });
+  return requestJson('/system/collective-entropy', { signal });
 }
 
 /** POST /ai-assist/:vibenodeId */
 export function aiAssist(vibenodeId: number, prompt: string, token: string, signal?: AbortSignal) {
-  return request(`/ai-assist/${vibenodeId}`, {
+  return requestJson(`/ai-assist/${vibenodeId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
