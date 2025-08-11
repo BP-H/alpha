@@ -15,6 +15,8 @@ export type Props = {
   onChange?: (prev: string | null, next: string | null) => void;
   /** Optional className so parent can style/position */
   className?: string;
+  /** Optional function to customize aria-label for a given reaction emoji */
+  getReactionLabel?: (emoji: string) => string;
 };
 
 /** Stable default set so UI never collapses if counts are missing */
@@ -25,6 +27,7 @@ export default function ReactionBar({
   counts = {},
   onChange,
   className,
+  getReactionLabel,
 }: Props) {
   // keep selected purely client-side; server markup stays consistent
   const [selected, setSelected] = useState<string | null>(null);
@@ -65,6 +68,7 @@ export default function ReactionBar({
             key={emoji}
             type="button"
             aria-pressed={active}
+            aria-label={getReactionLabel?.(emoji) ?? `${emoji} reaction`}
             title={`${emoji} ${n}`}
             onClick={() => handleClick(emoji)}
             className={`${styles.rxn} ${active ? styles.active : ''}`}
