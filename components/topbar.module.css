@@ -1,14 +1,94 @@
+/* tokens from globals.css are used here */
+.sr-only{ position:absolute!important; width:1px;height:1px; padding:0;margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;border:0; }
+
 .topbar{
-  position:sticky; top:0; z-index:2;
-  display:flex; align-items:center; gap:12px;
-  background:rgba(255,255,255,.7);
-  backdrop-filter: blur(8px) saturate(140%);
-  border:1px solid rgba(0,0,0,.08);
-  padding:8px 10px; margin-bottom:12px;
+  position: sticky; top: 0; z-index: 40;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid var(--line);
 }
+
+/* Avatar */
 .avatar{
-  width:36px; height:36px; border-radius:8px; font-weight:900;
-  border:1px solid rgba(0,0,0,.2); background:#fff; cursor:pointer;
+  width: 36px; height: 36px;
+  display: grid; place-items: center; overflow: hidden;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  position: relative;
 }
-.spacer{ flex:1; }
-.link{ font-weight:800; }
+.avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+.initials{ font-weight: 800; color: var(--ink-0); }
+
+/* Search */
+.search{
+  height: 40px;
+  display: grid; grid-template-columns: 20px 1fr auto; align-items: center;
+  padding: 0 12px; gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg-1);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-2);
+}
+.search svg{ width:18px; height:18px; fill: var(--ink-2); }
+.search input{
+  border: 0; outline: none; background: transparent;
+  color: var(--ink-0); font-size: 14px;
+}
+.search input::placeholder{ color: var(--ink-2); }
+.search:focus-within{ box-shadow: 0 0 0 3px var(--focus); }
+
+/* "/" key hint */
+.kbd{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 6px; border: 1px solid var(--line);
+  background: #fff; color: var(--ink-2);
+  font-size: 12px; font-weight: 700; letter-spacing: .2px;
+}
+
+/* Actions */
+.actions{ display:flex; align-items:center; gap: 8px; }
+.iconBtn{
+  width: 36px; height: 36px;
+  display:grid; place-items:center;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.iconBtn:hover{ transform: translateY(-1px); box-shadow: 0 8px 16px rgba(18,24,40,.06); }
+.iconBtn:focus-visible{ box-shadow: 0 0 0 3px var(--focus); }
+.iconBtn svg{ width:18px; height:18px; fill: var(--ink-1); }
+
+/* notification dot */
+.dot{
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+/* CTA link styled as button */
+.cta{
+  display:inline-flex; align-items:center; justify-content:center;
+  height: 36px; padding: 0 12px;
+  border-radius: var(--r-sm);
+  font-weight: 700; color: #fff; text-decoration:none;
+  background: linear-gradient(90deg, var(--pink), var(--blue));
+  border: 1px solid transparent;
+  transition: box-shadow .12s ease;
+}
+.cta:hover{ box-shadow: 0 0 0 3px var(--focus); }
+
+/* Responsive tweaks */
+@media (max-width: 720px){
+  .cta{ display:none; }    /* keep the topbar minimal on phones */
+  .kbd{ display:none; }
+  .topbar{ gap: 10px; padding: 8px 12px; }
+}
