@@ -9,6 +9,7 @@ import {
   postToInstagram,
   postToLinkedIn,
 } from '@/libs/socialIntegrations';
+import { useSocialAuth } from '@/lib/socialAuth';
 
 export default function PostComposer() {
   const [text, setText] = useState('');
@@ -16,18 +17,25 @@ export default function PostComposer() {
     linkedin: false,
     instagram: false,
   });
+  const { linkedinToken, instagramToken } = useSocialAuth();
 
   const submit = async () => {
-    // Placeholder access tokens; production would obtain via OAuth.
-    const dummyToken = '';
     try {
       if (dest.linkedin)
-        await postToLinkedIn({ accessToken: dummyToken, content: text });
+        await postToLinkedIn({
+          accessToken: linkedinToken ?? '',
+          content: text,
+        });
       if (dest.instagram)
-        await postToInstagram({ accessToken: dummyToken, content: text });
+        await postToInstagram({
+          accessToken: instagramToken ?? '',
+          content: text,
+        });
       setText('');
+      alert('Post sent successfully');
     } catch (err) {
       console.error(err);
+      alert('Failed to send post');
     }
   };
 
