@@ -6,24 +6,23 @@ import { useEffect, useRef, useState } from 'react';
 
 // 3D hero (no SSR)
 const PortalHero = dynamic(() => import('@/components/ai/PortalHero'), { ssr: false });
-// Use the non-ai path to avoid the “module not found” on some branches
+
+// Use the non-ai path to avoid the "module not found" issue on some branches
 import PostComposer from '@/components/PostComposer';
 
-import ComingSoon3D from '@/components/ComingSoon3D';
+/* ------------------------------------------------------------------ */
+/* Demo feed data                                                      */
+/* ------------------------------------------------------------------ */
+type Post = {
+  id: string;
+  author: string;
+  text: string;
+  time: string;
+  image?: string;
+  alt?: string;
+};
 
-export default function Page() {
-  return (
-    <ComingSoon3D
-      title="GLOBALRUNWAYAI.COM"
-      subtitle="coming soon///stay tuned///"
-    />
-  );
-}
-
-
-type Post = { id: string; author: string; text: string; time: string; image?: string; alt?: string };
-
-function makeBatch(offset: number, size = 10): Post[] {
+function makeBatch(offset: number, size = 12): Post[] {
   return Array.from({ length: size }).map((_, i) => {
     const n = offset + i;
     return {
@@ -39,7 +38,11 @@ function makeBatch(offset: number, size = 10): Post[] {
   });
 }
 
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 export default function Page() {
+  // infinite scroll
   const [posts, setPosts] = useState<Post[]>(() => makeBatch(0, 12));
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -49,22 +52,25 @@ export default function Page() {
   useEffect(() => {
     if (!sentinelRef.current) return;
     let timer: ReturnType<typeof setTimeout> | null = null;
+
     const io = new IntersectionObserver(
       (entries) => {
-        const [e] = entries;
+        const e = entries[0];
         if (!e.isIntersecting || loading || !hasMore) return;
+
         setLoading(true);
         timer = setTimeout(() => {
           const next = makeBatch(page * 12, 12);
           setPosts((prev) => [...prev, ...next]);
           const nextPage = page + 1;
           setPage(nextPage);
-          if (nextPage >= 10) setHasMore(false);
+          if (nextPage >= 10) setHasMore(false); // demo cap
           setLoading(false);
         }, 220);
       },
       { rootMargin: '1200px 0px 800px 0px' }
     );
+
     io.observe(sentinelRef.current);
     return () => {
       if (timer) clearTimeout(timer);
@@ -98,19 +104,24 @@ export default function Page() {
         </Link>
       </header>
 
-      {/* 3-column shell from globals.css */}
+      {/* 3-column shell (tokens/styles come from app/globalrunwayai/globals.css) */}
       <div className="app-shell">
+        {/* left rail (desktop) */}
         <aside className="app-left" />
 
+        {/* center column */}
         <section style={{ display: 'grid', gap: 16 }}>
+          {/* small portal dock */}
           <div className="card card--angled" style={{ padding: 0 }}>
             <PortalHero />
           </div>
 
+          {/* composer */}
           <div className="card" style={{ padding: 12 }}>
             <PostComposer />
           </div>
 
+          {/* feed */}
           {posts.map((p) => (
             <article key={p.id} className="card" style={{ padding: 12 }}>
               <header style={{ marginBottom: 6 }}>
@@ -119,7 +130,13 @@ export default function Page() {
               </header>
               <p style={{ marginBottom: 10 }}>{p.text}</p>
               {p.image && (
-                <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--line)' }}>
+                <div
+                  style={{
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    border: '1px solid var(--line)',
+                  }}
+                >
                   <img
                     src={p.image}
                     alt={(p.alt || p.text || 'Post image').slice(0, 80)}
@@ -136,11 +153,15 @@ export default function Page() {
               </footer>
             </article>
           ))}
-          <div ref={sentinelRef} style={{ height: 44, display: 'grid', placeItems: 'center', color: 'var(--ink-2)' }}>
+          <div
+            ref={sentinelRef}
+            style={{ height: 44, display: 'grid', placeItems: 'center', color: 'var(--ink-2)' }}
+          >
             {loading ? 'Loading…' : hasMore ? '' : '— End —'}
           </div>
         </section>
 
+        {/* right rail (desktop) */}
         <aside className="app-right" />
       </div>
     </main>
