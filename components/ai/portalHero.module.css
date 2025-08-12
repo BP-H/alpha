@@ -1,0 +1,27 @@
+/* Sticky portal that does NOT block clicks below it */
+.portal {
+  position: sticky;
+  top: 0;                /* or calc(var(--topbar-h,60px)) if you set it */
+  z-index: 10;
+  isolation: isolate;
+  pointer-events: none;  /* wrapper never eats clicks */
+  background: transparent;
+}
+
+.shell {
+  height: 220px;         /* compact hero height */
+  pointer-events: auto;  /* re-enable inside */
+  transition: height 120ms ease;
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line, #e7ebf3);
+  background: #0f0f12;
+  box-shadow: 0 0 20px rgba(155, 140, 255, 0.15);
+  transform-origin: top center;
+  touch-action: manipulation;
+}
