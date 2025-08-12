@@ -1,13 +1,14 @@
-// app/page.tsx
 'use client';
 
-import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import styles from './page.module.css';
 
 // 3D hero (no SSR)
 const PortalHero = dynamic(() => import('@/components/ai/PortalHero'), { ssr: false });
-import PostComposer from '@/components/ai/PostComposer';
+import PostComposer from '@/components/PostComposer';
 
 type Post = {
   id: string;
