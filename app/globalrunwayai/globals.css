@@ -1,0 +1,151 @@
+/* app/globalrunwayai/globals.css  — light, minimal shell for this route */
+
+/* === Design tokens ====================================================== */
+:root{
+  /* surfaces */
+  --bg-0:#ffffff;         /* page */
+  --bg-1:#f6f7f9;         /* panels */
+  --bg-2:#eef1f5;         /* cards */
+
+  /* text */
+  --ink-0:#0e1220;
+  --ink-1:#3c4457;
+  --ink-2:#78819a;
+
+  /* accents */
+  --pink:#ff1fbf;
+  --blue:#00d1ff;
+  --focus:rgba(0,209,255,.24);
+
+  /* lines / shadows */
+  --line:#e7ebf3;
+  --line-2:#dde3ee;
+  --shadow-1:0 6px 18px rgba(18,24,40,.06);
+  --shadow-2:0 1px 0 rgba(255,255,255,.8) inset;
+
+  /* radii / rhythm */
+  --r-lg:18px;
+  --r-md:14px;
+  --r-sm:10px;
+  --gap:16px;
+
+  /* header height fallback; page.tsx updates this at runtime */
+  --topbar-h:64px;
+}
+
+/* Force light */
+@media (prefers-color-scheme: dark){ :root{ color-scheme: light; } }
+
+/* === Base =============================================================== */
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color:var(--ink-0);
+  background:var(--bg-0);            /* <- no more pink gradient here */
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter,
+               "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* match your new layout */
+main{ max-width:1280px; margin:0 auto; padding:20px; }
+
+/* 3-column shell (desktop), collapses on smaller screens */
+.app-shell{
+  display:grid;
+  grid-template-columns:272px 1fr 312px;
+  gap:var(--gap);
+}
+@media (max-width:1200px){
+  .app-shell{ grid-template-columns:256px 1fr; }
+  .app-right{ display:none; }
+}
+@media (max-width:900px){
+  .app-shell{ grid-template-columns:1fr; }
+  .app-left{ display:none; }
+}
+
+/* Cards */
+.card{
+  background:var(--bg-1);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1), var(--shadow-2);
+  position:relative;
+  overflow:clip;
+}
+
+/* Optional angular edge */
+.card--angled{
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+}
+
+/* thin neon sweep detail (subtle) */
+.card__sweep{
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(255,31,191,.27), rgba(0,209,255,.18) 60%, transparent);
+  border:1px solid var(--line);
+}
+
+/* Buttons */
+.btn{
+  --h:40px;
+  height:var(--h);
+  padding:0 14px;
+  border-radius:var(--r-sm);
+  border:1px solid var(--line-2);
+  background:#fff;
+  color:var(--ink-0);
+  font-weight:600;
+  display:inline-flex; align-items:center; gap:8px;
+  cursor:pointer;
+  transition:transform .08s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.btn:hover{ transform:translateY(-1px); box-shadow:0 8px 16px rgba(18,24,40,.06); }
+
+.btn.btn--primary{
+  background:linear-gradient(90deg, var(--pink), var(--blue));
+  color:#fff;
+  border-color:transparent;
+}
+.btn.btn--primary:hover{ box-shadow:0 0 0 3px var(--focus); }
+.btn.btn--ghost{ background:var(--bg-0); }
+
+/* Pills / chips */
+.pill, .chip{
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.25rem .55rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--bg-0);
+  color:var(--ink-1);
+  font-size:12px; font-weight:600;
+}
+
+/* Inputs */
+input, textarea{
+  background:#fff; border:1px solid var(--line); border-radius:var(--r-sm);
+  padding:10px 12px; color:var(--ink-0);
+}
+
+/* Links */
+a{ color:var(--ink-0); text-decoration:none; }
+a:hover{ color:var(--pink); }
+
+/* Reaction bar (used by your posts) */
+.reaction-bar{ display:flex; gap:8px; }
+.reaction-btn{
+  height:34px; padding:0 12px; border-radius:999px;
+  border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:600;
+}
+.reaction-btn:hover{ box-shadow:0 0 0 3px var(--focus); }
+
+/* Utility */
+hr{ border:0; border-top:1px solid var(--line); margin:16px 0; }
+
+/* Safety rail so the sticky portal never eats clicks below it */
+.portalHero, .portalHero *{ pointer-events:auto; }
+.portalHeroOverlay{ pointer-events:none; }
