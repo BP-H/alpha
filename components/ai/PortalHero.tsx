@@ -1,64 +1,74 @@
-// components/ai/PortalHero.tsx
-'use client';
+/* components/ai/portalHero.module.css */
+/* Sticky portal that does NOT block clicks below it. */
 
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Suspense, useRef } from 'react';
-import * as THREE from 'three';
+.portal {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  isolation: isolate;
+  background: var(--panel, #0b0c11);
+  border-bottom: 1px solid var(--stroke, #1f2230);
 
-function Rotator() {
-  const mesh = useRef<THREE.Mesh>(null!);
-  useFrame((_, d) => {
-    if (!mesh.current) return;
-    mesh.current.rotation.x += d * 0.4;
-    mesh.current.rotation.y += d * 0.6;
-  });
-  return (
-    <mesh ref={mesh}>
-      <torusKnotGeometry args={[0.9, 0.28, 180, 24]} />
-      {/* subtle “bloom-like” feel via emissive on light material (no extra libs) */}
-      <meshStandardMaterial color={'#ffffff'} emissive={'#ff2db8'} emissiveIntensity={0.12} />
-    </mesh>
-  );
+  /* key: let clicks fall through unless they're inside the card */
+  pointer-events: none;
 }
 
-export default function PortalHero() {
-  return (
-    <div className="hero">
-      <div className="heroInner" aria-label="Portal hero scene">
-        <Canvas camera={{ position: [2.2, 1.2, 2.2], fov: 60 }}>
-          <color attach="background" args={['#ffffff']} />
-          <ambientLight intensity={0.8} />
-          <directionalLight position={[3, 4, 2]} intensity={1.2} color={'#ffffff'} />
-          <Suspense fallback={null}>
-            <Rotator />
-          </Suspense>
-          {/* white floor reflection feel */}
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.1, 0]}>
-            <planeGeometry args={[8, 8]} />
-            <meshStandardMaterial color={'#f7f7f7'} />
-          </mesh>
-        </Canvas>
-      </div>
+.shell {
+  transition: height 120ms ease;
+  /* re-enable events *inside* the hero */
+  pointer-events: auto;
+}
 
-      <style>{`
-        .hero{
-          width:100%;
-          /* keep a light, breathable hero */
-          background:#fff;
-          border:1px solid #eee; border-radius:18px;
-        }
-        /* sticky is applied by parent (page.tsx) — transforms live on the child */
-        .heroInner{
-          height:300px;
-          will-change: transform;
-          transform: translateZ(0);
-          border-radius:18px;
-          overflow:hidden;
-        }
-        @media (min-width:768px){
-          .heroInner{ height:360px; }
-        }
-      `}</style>
-    </div>
+.card {
+  position: relative;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--stroke, #262a3c);
+  background: #0f0f12;
+  box-shadow: 0 0 20px rgba(155, 140, 255, 0.15);
+  touch-action: manipulation;
+  transform-origin: top center;
+  transition: transform 120ms ease;
+  will-change: transform;
+
+  /* card itself needs to be interactive */
+  pointer-events: auto;
+}
+
+.glowPink {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 50% at 50% 35%,
+    rgba(255, 45, 184, 0.25) 0%,
+    transparent 70%
   );
+  mix-blend-mode: screen;
+}
+
+.glowPurple {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  background: radial-gradient(
+    55% 45% at 50% 30%,
+    rgba(155, 140, 255, 0.2) 0%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+
+.glossAngle {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    130deg,
+    rgba(155, 140, 255, 0.12) 10%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 45, 184, 0.15) 90%
+  );
+  mix-blend-mode: screen;
 }
