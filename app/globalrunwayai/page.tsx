@@ -9,6 +9,18 @@ const PortalHero = dynamic(() => import('@/components/ai/PortalHero'), { ssr: fa
 // Use the non-ai path to avoid the “module not found” on some branches
 import PostComposer from '@/components/PostComposer';
 
+import ComingSoon3D from '@/components/ComingSoon3D';
+
+export default function Page() {
+  return (
+    <ComingSoon3D
+      title="GLOBALRUNWAYAI.COM"
+      subtitle="coming soon///stay tuned///"
+    />
+  );
+}
+
+
 type Post = { id: string; author: string; text: string; time: string; image?: string; alt?: string };
 
 function makeBatch(offset: number, size = 10): Post[] {
