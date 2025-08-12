@@ -1,39 +1,97 @@
-// app/globalrunwayai/page.tsx
-import PortalHero from '@/components/ai/PortalHero';
-import PostComposer from '@/components/ai/PostComposer';
+'use client';
+
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import { useEffect, useRef, useState } from 'react';
+
+// 3D hero (no SSR)
+const PortalHero = dynamic(() => import('@/components/ai/PortalHero'), { ssr: false });
+// Use the non-ai path to avoid the “module not found” on some branches
+import PostComposer from '@/components/PostComposer';
+
+type Post = { id: string; author: string; text: string; time: string; image?: string; alt?: string };
+
+function makeBatch(offset: number, size = 10): Post[] {
+  return Array.from({ length: size }).map((_, i) => {
+    const n = offset + i;
+    return {
+      id: String(n),
+      author: ['@proto_ai', '@neonfork', '@superNova_2177'][n % 3],
+      time: new Date(Date.now() - n * 1000 * 60 * 5).toLocaleString(),
+      text:
+        n % 3 === 0
+          ? 'Low-poly moment — rotating differently in each instance as you scroll.'
+          : 'Prototype feed — symbolic demo copy for layout testing.',
+      image: n % 2 === 0 ? `https://picsum.photos/seed/sn_${n}/960/540` : undefined,
+    };
+  });
+}
 
 export default function Page() {
+  const [posts, setPosts] = useState<Post[]>(() => makeBatch(0, 12));
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const [e] = entries;
+        if (!e.isIntersecting || loading || !hasMore) return;
+        setLoading(true);
+        timer = setTimeout(() => {
+          const next = makeBatch(page * 12, 12);
+          setPosts((prev) => [...prev, ...next]);
+          const nextPage = page + 1;
+          setPage(nextPage);
+          if (nextPage >= 10) setHasMore(false);
+          setLoading(false);
+        }, 220);
+      },
+      { rootMargin: '1200px 0px 800px 0px' }
+    );
+    io.observe(sentinelRef.current);
+    return () => {
+      if (timer) clearTimeout(timer);
+      io.disconnect();
+    };
+  }, [page, loading, hasMore]);
+
   return (
-    <main>
+    <main style={{ maxWidth: 1280, margin: '0 auto', padding: 20 }}>
+      {/* simple translucent topbar */}
+      <header
+        role="banner"
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          padding: '10px 12px',
+          background: 'rgba(255,255,255,.8)',
+          backdropFilter: 'blur(8px) saturate(140%)',
+          borderBottom: '1px solid var(--line)',
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ fontWeight: 800 }}>GLOBALRUNWAYAI</div>
+        <div style={{ flex: 1 }} />
+        <Link href="/3d" className="btn btn--primary" style={{ textDecoration: 'none' }}>
+          Launch 3D
+        </Link>
+      </header>
+
+      {/* 3-column shell from globals.css */}
       <div className="app-shell">
-        {/* LEFT: simple nav */}
-        <aside className="app-left">
-          <div className="card card--angled" style={{ padding: 12 }}>
-            <div style={{ display: 'grid', gap: 8 }}>
-              <a className="pill" href="#">Feed</a>
-              <a className="pill" href="#">Messages</a>
-              <a className="pill" href="#">Proposals</a>
-              <a className="pill" href="#">Decisions</a>
-              <a className="pill" href="#">Execution</a>
-              <a className="pill" href="#">Companies</a>
-              <a className="pill" href="#">Settings</a>
-            </div>
-          </div>
+        <aside className="app-left" />
 
-          <div className="card" style={{ marginTop: 12, padding: 12 }}>
-            <div className="card__sweep" />
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 12, textAlign: 'center' }}>
-              <div><div style={{ fontWeight: 700 }}>2,302</div><div style={{ color: 'var(--ink-2)' }}>views</div></div>
-              <div><div style={{ fontWeight: 700 }}>1,542</div><div style={{ color: 'var(--ink-2)' }}>reach</div></div>
-              <div><div style={{ fontWeight: 700 }}>12</div><div style={{ color: 'var(--ink-2)' }}>companies</div></div>
-            </div>
-          </div>
-        </aside>
-
-        {/* CENTER: hero + composer + sample posts */}
-        <section className="app-center" style={{ display: 'grid', gap: 16 }}>
+        <section style={{ display: 'grid', gap: 16 }}>
           <div className="card card--angled" style={{ padding: 0 }}>
-            {/* 3D hero (pointer-events is fixed in components/ai/portalHero.module.css) */}
             <PortalHero />
           </div>
 
@@ -41,57 +99,37 @@ export default function Page() {
             <PostComposer />
           </div>
 
-          {/* sample post blocks (static for now) */}
-          <article className="card" style={{ padding: 12 }}>
-            <div style={{ marginBottom: 8, color: 'var(--ink-1)' }}>
-              <strong>@proto_ai</strong> · just now
-            </div>
-            <img
-              alt="post"
-              src="https://images.unsplash.com/photo-1523419409543-a9d1d0ae0b0d?q=80&w=1280&auto=format&fit=crop"
-              style={{ width: '100%', borderRadius: '12px' }}
-            />
-            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-              <button className="btn">Like</button>
-              <button className="btn">Comment</button>
-              <button className="btn">Share</button>
-            </div>
-          </article>
-
-          <article className="card" style={{ padding: 12 }}>
-            <div style={{ marginBottom: 8, color: 'var(--ink-1)' }}>
-              <strong>@superNova_2177</strong> · 5m
-            </div>
-            <img
-              alt="post"
-              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1280&auto=format&fit=crop"
-              style={{ width: '100%', borderRadius: '12px' }}
-            />
-            <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-              <button className="btn">Like</button>
-              <button className="btn">Comment</button>
-              <button className="btn">Share</button>
-            </div>
-          </article>
+          {posts.map((p) => (
+            <article key={p.id} className="card" style={{ padding: 12 }}>
+              <header style={{ marginBottom: 6 }}>
+                <strong>{p.author}</strong>
+                <span style={{ color: 'var(--ink-2)' }}> • {p.time}</span>
+              </header>
+              <p style={{ marginBottom: 10 }}>{p.text}</p>
+              {p.image && (
+                <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--line)' }}>
+                  <img
+                    src={p.image}
+                    alt={(p.alt || p.text || 'Post image').slice(0, 80)}
+                    loading="lazy"
+                    decoding="async"
+                    style={{ display: 'block', width: '100%', height: 'auto' }}
+                  />
+                </div>
+              )}
+              <footer style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                <button className="btn">Like</button>
+                <button className="btn">Comment</button>
+                <button className="btn">Share</button>
+              </footer>
+            </article>
+          ))}
+          <div ref={sentinelRef} style={{ height: 44, display: 'grid', placeItems: 'center', color: 'var(--ink-2)' }}>
+            {loading ? 'Loading…' : hasMore ? '' : '— End —'}
+          </div>
         </section>
 
-        {/* RIGHT: small cards */}
-        <aside className="app-right" style={{ display: 'grid', gap: 12 }}>
-          <div className="card" style={{ padding: 12 }}>
-            <div className="card__sweep" />
-            <h3 style={{ margin: '12px 0 4px' }}>Identity</h3>
-            <p style={{ color: 'var(--ink-2)' }}>Switch modes and manage entities.</p>
-          </div>
-          <div className="card" style={{ padding: 12 }}>
-            <div className="card__sweep" />
-            <h3 style={{ margin: '12px 0 4px' }}>Shortcuts</h3>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
-              <button className="btn">New Proposal</button>
-              <button className="btn">Start Vote</button>
-              <button className="btn">Invite</button>
-            </div>
-          </div>
-        </aside>
+        <aside className="app-right" />
       </div>
     </main>
   );
