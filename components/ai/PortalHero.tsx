@@ -31,15 +31,29 @@ export default function PortalHero() {
             <Float speed={1} rotationIntensity={0.35} floatIntensity={0.9}>
               <mesh>
                 <torusKnotGeometry args={[0.6, 0.18, 120, 16]} />
-                <meshStandardMaterial color="#b8a6ff" metalness={0.6} roughness={0.2} />
+                <meshStandardMaterial
+                  color="#b8a6ff"
+                  metalness={0.6}
+                  roughness={0.2}
+                />
               </mesh>
             </Float>
 
-            <ContactShadows position={[0, -0.85, 0]} opacity={0.25} scale={10} blur={1.6} far={2} />
+            <ContactShadows
+              position={[0, -0.85, 0]}
+              opacity={0.25}
+              scale={10}
+              blur={1.6}
+              far={2}
+            />
 
             {!disableFX && (
               <EffectComposer>
-                <Bloom intensity={0.6} luminanceThreshold={0.75} luminanceSmoothing={0.2} />
+                <Bloom
+                  intensity={0.6}
+                  luminanceThreshold={0.75}
+                  luminanceSmoothing={0.2}
+                />
               </EffectComposer>
             )}
           </Canvas>
